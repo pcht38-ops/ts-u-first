@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《慈烏夜啼》詩詞排序與填空測驗</title>
+  <style>
+    :root {
+      --primary-color: #8b1e1e;
+      --primary-hover: #a62828;
+      --bg-color: #f7f4ef;
+      --card-bg: #ffffff;
+      --text-color: #2b2b2b;
+      --border-color: #dcd3c6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Serif TC", serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background-image: radial-gradient(#e6dfd5 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .container {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 680px;
+      padding: 35px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .header-title {
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    /* 登入區塊 */
+    .login-box {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: #444;
+    }
+
+    input[type="text"].name-input {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 1.2rem;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      outline: none;
+      transition: all 0.25s ease;
+      text-align: center;
+      background-color: #fcfcfb;
+    }
+
+    input[type="text"].name-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(139, 30, 30, 0.15);
+      background-color: #fff;
+    }
+
+    .btn-submit {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      border: none;
+      padding: 14px 24px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(139, 30, 30, 0.25);
+    }
+
+    .btn-submit:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    /* 規則告示卡片 */
+    .rules-card {
+      background: #faf6f0;
+      border-left: 4px solid var(--primary-color);
+      padding: 14px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .rules-card ul {
+      margin-left: 20px;
+      margin-top: 6px;
+    }
+
+    /* 遊戲頂部資訊 */
+    .user-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      border-bottom: 2px dashed var(--border-color);
+      font-size: 1.1rem;
+    }
+
+    .user-bar strong {
+      color: var(--primary-color);
+    }
+
+    /* 詩句列表 */
+    .poem-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .poem-item {
+      display: flex;
+      align-items: center;
+      background: #faf8f5;
+      border: 1px solid #e8e0d5;
+      border-radius: 10px;
+      padding: 10px 14px;
+      gap: 12px;
+      transition: background 0.2s;
+    }
+
+    .poem-item:hover {
+      background: #fff;
+      border-color: #d0c4b4;
+    }
+
+    .order-tag {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .btn-move {
+      background: #e5ddd0;
+      color: #444;
+      border: none;
+      width: 32px;
+      height: 26px;
+      font-size: 0.85rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .btn-move:hover:not(:disabled) {
+      background: var(--primary-color);
+      color: #fff;
+    }
+
+    .btn-move:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* 詩句文字區域（1.5rem 大字體） */
+    .sentence-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      flex-grow: 1;
+      color: #2b2b2b;
+    }
+
+    /* 填充輸入框（字體設為 1.6rem，高於並兼容詩句本體文字大小） */
+    .blank-input {
+      width: 44px;
+      height: 44px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-align: center;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      background-color: #fffdfa;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .blank-input:focus {
+      background-color: #ffffff;
+      border-color: #d93838;
+      box-shadow: 0 0 0 3px rgba(217, 56, 56, 0.2);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* 滿版成績顯示遮罩 (正中央大數字、不可關閉或隱藏) */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 12, 10, 0.88);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+    }
+
+    .result-card {
+      background: #ffffff;
+      padding: 45px 35px;
+      border-radius: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 480px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      border: 4px solid var(--primary-color);
+      animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .result-card h2 {
+      font-size: 2.1rem;
+      color: #222;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+
+    .result-student-name {
+      font-size: 1.3rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .score-badge {
+      background: #faf4ed;
+      border: 2px dashed #e2d2be;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 15px 0 25px 0;
+    }
+
+    .big-score {
+      font-size: 5.5rem;
+      font-weight: 900;
+      color: var(--primary-color);
+      line-height: 1;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .score-label {
+      font-size: 1.1rem;
+      color: #777;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .result-notice {
+      font-size: 0.95rem;
+      color: #b92c2c;
+      background: #fdf2f2;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #f7c6c6;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 登入畫面 -->
+  <div id="login-screen" class="container">
+    <h1 class="header-title">《慈烏夜啼》詩詞測驗</h1>
+    <p class="subtitle">請輸入學生姓名開始詩詞排列與填空小遊戲</p>
+
+    <div class="rules-card">
+      <strong>📝 測驗規則說明：</strong>
+      <ul>
+        <li>測驗範圍：從「慈烏失其母」至「未盡反哺心」（共 8 句）。</li>
+        <li>計分方式：每句滿分 12.5 分，總分 100 分。<strong>每錯 1 個字扣 2 分</strong>。</li>
+        <li>字體規範：填空輸入框字體清晰放大，便於檢視與輸入。</li>
+        <li><strong>限制：每人僅能挑戰一次</strong>，提交後成績將永久顯示。</li>
+      </ul>
+    </div>
+
+    <div class="login-box">
+      <div class="form-group">
+        <label for="student-name-input">學生姓名</label>
+        <input type="text" id="student-name-input" class="name-input" placeholder="請在此輸入您的名字" maxlength="10" autocomplete="off">
+      </div>
+      <button class="btn-submit" onclick="startGame()">進入測驗</button>
+    </div>
+  </div>
+
+  <!-- 2. 遊戲測驗畫面 -->
+  <div id="game-screen" class="container hidden">
+    <div class="user-bar">
+      <span>考生姓名：<strong id="display-name">--</strong></span>
+      <span style="font-size: 0.95rem; color: #666;">8 句 / 滿分 100 分</span>
+    </div>
+
+    <p style="margin-bottom: 15px; font-size: 0.95rem; color: #555; text-align: center;">
+      💡 請使用 <strong>▲/▼</strong> 按鈕調整句子正確順序，並在空格填入正確的字。
+    </p>
+
+    <div id="poem-list" class="poem-list"></div>
+
+    <button class="btn-submit" style="width: 100%; margin-top: 10px;" onclick="submitGame()">確認提交答案（不可修改）</button>
+  </div>
+
+  <!-- 3. 成績顯示 Overlay (正中央超大顯示且不可關閉) -->
+  <div id="result-overlay" class="overlay hidden">
+    <div class="result-card">
+      <h2>測驗成績單</h2>
+      <p class="result-student-name" id="result-student-name">考生：--</p>
+
+      <div class="score-badge">
+        <div class="big-score" id="result-score-num">0</div>
+        <div class="score-label">總分 / 100 分</div>
+      </div>
+
+      <p class="result-notice">🔒 本測驗僅限進行一次。<br>成績已安全記錄且無法重考或關閉此頁面。</p>
+    </div>
+  </div>
+
+  <script>
+    // 正確詩句資料庫 (共 8 句)
+    const originalPoem = [
+      { id: 1, full: "慈烏失其母", blanks: [2] },       // 慈 烏 [失] 其 母
+      { id: 2, full: "啞啞吐哀音", blanks: [2] },       // 啞 啞 [吐] 哀 音
+      { id: 3, full: "晝夜不飛去", blanks: [2] },       // 晝 夜 [不] 飛 去
+      { id: 4, full: "經年守故林", blanks: [3, 4] },    // 經 年 守 [故] [林]
+      { id: 5, full: "夜夜夜半啼", blanks: [3] },       // 夜 夜 夜 [半] 啼
+      { id: 6, full: "聞者為沾襟", blanks: [3, 4] },    // 聞 者 為 [沾] [襟]
+      { id: 7, full: "聲中如告訴", blanks: [3] },       // 聲 中 如 [告] 訴
+      { id: 8, full: "未盡反哺心", blanks: [2, 3] }     // 未 盡 [反] [哺] 心
+    ];
+
+    let currentList = [];
+    let playerName = "";
+
+    // 頁面載入時檢查瀏覽器是否已紀錄測驗紀錄
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedRecord = localStorage.getItem("ciwu_quiz_passed_record");
+      if (savedRecord) {
+        try {
+          const record = JSON.parse(savedRecord);
+          showFinalResultScreen(record.name, record.score);
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    });
+
+    // 開始測驗
+    function startGame() {
+      const input = document.getElementById("student-name-input").value.trim();
+      if (!input) {
+        alert("請輸入名字後再開始測驗！");
+        return;
+      }
+      playerName = input;
+
+      // 複製資料並打亂順序 (洗牌)
+      currentList = JSON.parse(JSON.stringify(originalPoem));
+      do {
+        currentList.sort(() => Math.random() - 0.5);
+      } while (isAlreadyCorrectOrder()); // 確保隨機順序不會恰好等於正確答案
+
+      // 初始化學生輸入暫存
+      currentList.forEach(item => {
+        item.userInputs = {};
+      });
+
+      document.getElementById("display-name").innerText = playerName;
+      document.getElementById("login-screen").classList.add("hidden");
+      document.getElementById("game-screen").classList.remove("hidden");
+
+      renderPoemList();
+    }
+
+    function isAlreadyCorrectOrder() {
+      for (let i = 0; i < currentList.length; i++) {
+        if (currentList[i].id !== originalPoem[i].id) return false;
+      }
+      return true;
+    }
+
+    // 渲染詩句清單
+    function renderPoemList() {
+      const container = document.getElementById("poem-list");
+      container.innerHTML = "";
+
+      currentList.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "poem-item";
+
+        // 序號
+        const numTag = document.createElement("div");
+        numTag.className = "order-tag";
+        numTag.innerText = index + 1;
+
+        // 上下移動按鈕
+        const btnGroup = document.createElement("div");
+        btnGroup.className = "btn-group";
+
+        const btnUp = document.createElement("button");
+        btnUp.className = "btn-move";
+        btnUp.innerText = "▲";
+        btnUp.title = "向上移動";
+        btnUp.disabled = (index === 0);
+        btnUp.onclick = () => moveRow(index, -1);
+
+        const btnDown = document.createElement("button");
+        btnDown.className = "btn-move";
+        btnDown.innerText = "▼";
+        btnDown.title = "向下移動";
+        btnDown.disabled = (index === currentList.length - 1);
+        btnDown.onclick = () => moveRow(index, 1);
+
+        btnGroup.appendChild(btnUp);
+        btnGroup.appendChild(btnDown);
+
+        // 詩句文字區域
+        const sentenceBox = document.createElement("div");
+        sentenceBox.className = "sentence-display";
+
+        for (let i = 0; i < item.full.length; i++) {
+          if (item.blanks.includes(i)) {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.className = "blank-input";
+            input.maxLength = 1;
+            input.value = item.userInputs[i] || "";
+            // 即時記錄學生輸入
+            input.oninput = (e) => {
+              item.userInputs[i] = e.target.value.trim();
+            };
+            sentenceBox.appendChild(input);
+          } else {
+            const span = document.createElement("span");
+            span.innerText = item.full[i];
+            sentenceBox.appendChild(span);
+          }
+        }
+
+        row.appendChild(numTag);
+        row.appendChild(btnGroup);
+        row.appendChild(sentenceBox);
+        container.appendChild(row);
+      });
+    }
+
+    // 上下移動行
+    function moveRow(index, direction) {
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= currentList.length) return;
+
+      const temp = currentList[index];
+      currentList[index] = currentList[targetIndex];
+      currentList[targetIndex] = temp;
+
+      renderPoemList();
+    }
+
+    // 提交成績計算
+    function submitGame() {
+      if (!confirm("確定要提交答案嗎？提交後將無法修改或重玩！")) return;
+
+      let totalScore = 0;
+
+      // 8 個位置逐一評分
+      for (let i = 0; i < 8; i++) {
+        const correctText = originalPoem[i].full; // 正確第 i 句的 5 個字
+        const currentItem = currentList[i];       // 學生放在第 i 個位置的句子
+
+        // 組合學生在該位置呈現的完整 5 個字
+        let studentText = "";
+        for (let c = 0; c < currentItem.full.length; c++) {
+          if (currentItem.blanks.includes(c)) {
+            studentText += (currentItem.userInputs[c] || " "); // 未填補空格
+          } else {
+            studentText += currentItem.full[c];
+          }
+        }
+
+        // 比較該位置的 5 個字，每錯 1 字扣 2 分
+        let wrongCount = 0;
+        for (let c = 0; c < 5; c++) {
+          if (studentText[c] !== correctText[c]) {
+            wrongCount++;
+          }
+        }
+
+        let sentenceScore = 12.5 - (wrongCount * 2);
+        if (sentenceScore < 0) sentenceScore = 0;
+
+        totalScore += sentenceScore;
+      }
+
+      // 格式化分數，精確度至小數點第一位 (例如 94.5 或 100)
+      totalScore = Number(totalScore.toFixed(1));
+
+      // 儲存至 LocalStorage 防止重複挑戰
+      const record = {
+        name: playerName,
+        score: totalScore,
+        date: new Date().toLocaleString()
+      };
+      localStorage.setItem("ciwu_quiz_passed_record", JSON.stringify(record));
+
+      showFinalResultScreen(playerName, totalScore);
+    }
+
+    // 顯示永久成績遮罩
+    function showFinalResultScreen(name, score) {
+      document.getElementById("login-screen").classList.add("hidden");
+      document.getElementById("game-screen").classList.add("hidden");
+
+      document.getElementById("result-student-name").innerText = `考生：${name}`;
+      document.getElementById("result-score-num").innerText = score;
+      document.getElementById("result-overlay").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
